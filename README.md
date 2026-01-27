@@ -50,18 +50,21 @@ Páginas
 
 ## Requesítos
 
+- Versionamento com Git
+- NodeJS
 - TypeScript
+- API
 - NextJS ou NestJS + React
 - Prisma ou TypeORM
 - PostgreSQL
 - TailwindCSS
 - Zod & React Hook Form
 - Responsividade (Mobile First)
+- Clean Code
 
 ## Diferenciais
 
-- Clean Code
 - Docker Compose para rodar a aplicação e o banco de dados
-- Boas práticas de segurança (autenticação, autorização, etc.)
+- Boas práticas de segurança
 - Testes de integração
 - Uso de bibliotecas de componentes (Shadcn UI)
