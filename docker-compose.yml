@@ -1,0 +1,56 @@
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: interato-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: petshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - interato-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: interato-backend
+    ports:
+      - "3334:3333"
+    environment:
+      DATABASE_URL: "postgresql://user:password@database:5432/petshop"
+      NODE_ENV: development
+    depends_on:
+      - database
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - interato-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: interato-frontend
+    ports:
+      - "3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:3000"
+    depends_on:
+      - backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - interato-network
+
+volumes:
+  postgres_data:
+
+networks:
+  interato-network:
+    driver: bridge
