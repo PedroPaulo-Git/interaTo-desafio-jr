@@ -34,7 +34,20 @@ docker compose up
 
 - **Frontend**: http://localhost:3000
 - **Backend**: http://localhost:3333
+- **Swagger Docs**: http://localhost:3333/api
 - **Database**: localhost:5432 (user: user, pass: password)
+
+## Authentication (Swagger)
+
+To test protected routes (like Creating or Updating Animals) on Swagger:
+
+1.  **Register/Login**: Use the `Auth` endpoints (`/auth/register` or `/auth/login`).
+2.  **Get Token**: Copy the `access_token` from the response.
+3.  **Authorize**:
+    - Click the green **Authorize** button at the top of the Swagger page.
+    - Paste the token (just the code, e.g., `eyJhbG...`).
+    - Click **Authorize** and then **Close**.
+4.  **Test**: Now you can execute protected requests!
 
 ## Development Info
 

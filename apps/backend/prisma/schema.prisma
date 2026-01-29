@@ -29,8 +29,10 @@ model Animal {
   type  AnimalType
   breed String
 
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId      String
+  ownerName    String
+  ownerContact String
+  owner        User   @relation(fields: [ownerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

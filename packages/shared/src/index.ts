@@ -15,7 +15,7 @@ export const UserSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters").optional(), // Optional on reads/listings
-    contact: z.string().min(5, "Contact info (e.g. Phone) is required"), // Requirement: Owner contact
+    contact: z.string().regex(/^\+55\d{2}9?\d{8}$/, "Contact must be in valid Brazilian format (e.g. +5581987730575)"),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
