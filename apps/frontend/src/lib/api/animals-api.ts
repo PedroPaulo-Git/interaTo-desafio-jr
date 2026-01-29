@@ -1,4 +1,5 @@
 import type { Animal, AnimalFormData } from '@/lib/types'
+import { getMockAnimals, getMockAnimal, createMockAnimal, updateMockAnimal, deleteMockAnimal, MOCK_TOKEN } from '@/lib/mock-data'
 
 // ============================================
 // API BASE URL
@@ -9,6 +10,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333'
 // ============================================
 // API HELPERS
 // ============================================
+
+// MOCK: Verificar se está em modo desenvolvedor
+function isMockMode(token: string): boolean {
+  return token === MOCK_TOKEN
+}
 
 function getAuthHeader(token: string): HeadersInit {
   return {
@@ -33,6 +39,11 @@ function getUserIdFromToken(token: string): string | null {
 
 export const animalsApi = {
   async getAll(token: string): Promise<Animal[]> {
+    // MOCK: Retornar dados mockados se em modo desenvolvedor
+    if (isMockMode(token)) {
+      return getMockAnimals()
+    }
+
     const userId = getUserIdFromToken(token)
     const response = await fetch(`${API_BASE_URL}/animals`, {
       headers: getAuthHeader(token),
@@ -48,6 +59,11 @@ export const animalsApi = {
   },
 
   async getMyAnimals(token: string): Promise<Animal[]> {
+    // MOCK: Filtrar apenas animais do usuário mockado
+    if (isMockMode(token)) {
+      return getMockAnimals().filter(a => a.isOwner)
+    }
+
     const userId = getUserIdFromToken(token)
     if (!userId) throw new Error('Invalid token')
 
@@ -64,6 +80,11 @@ export const animalsApi = {
   },
 
   async getById(token: string, id: string): Promise<Animal | null> {
+    // MOCK: Buscar animal mockado por ID
+    if (isMockMode(token)) {
+      return getMockAnimal(id)
+    }
+
     const userId = getUserIdFromToken(token)
     const response = await fetch(`${API_BASE_URL}/animals/${id}`, {
       headers: getAuthHeader(token),
@@ -79,6 +100,13 @@ export const animalsApi = {
   },
 
   async create(token: string, data: AnimalFormData): Promise<Animal> {
+    // MOCK: Criar animal mockado
+    if (isMockMode(token)) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { imageUrl, ...animalData } = data
+      return createMockAnimal(animalData)
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { imageUrl, ...animalData } = data
 
@@ -93,6 +121,13 @@ export const animalsApi = {
   },
 
   async update(token: string, id: string, data: Partial<AnimalFormData>): Promise<Animal> {
+    // MOCK: Atualizar animal mockado
+    if (isMockMode(token)) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { imageUrl, ...animalData } = data
+      return updateMockAnimal(id, animalData)
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { imageUrl, ...animalData } = data
 
@@ -107,6 +142,12 @@ export const animalsApi = {
   },
 
   async delete(token: string, id: string): Promise<void> {
+    // MOCK: Deletar animal mockado
+    if (isMockMode(token)) {
+      deleteMockAnimal(id)
+      return
+    }
+
     const response = await fetch(`${API_BASE_URL}/animals/${id}`, {
       method: 'DELETE',
       headers: getAuthHeader(token),

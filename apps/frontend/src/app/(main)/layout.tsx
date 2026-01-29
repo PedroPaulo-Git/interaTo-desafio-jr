@@ -195,7 +195,7 @@ export default function MainLayout({
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
+                          className={`flex items-center gap-3 px-10 py-6 py-3 rounded-xl transition-colors ${isActive
                             ? 'bg-primary text-primary-foreground'
                             : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                             }`}
@@ -208,14 +208,14 @@ export default function MainLayout({
                     <div className="border-t border-border my-4" />
                     <Link
                       href="/dashboard/profile"
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                      className="flex items-center gap-3 px-10 py-6 py-3 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     >
                       <User className="w-5 h-5" />
                       Meu Perfil
                     </Link>
                     <button
                       onClick={logout}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-colors w-full text-left"
+                      className="flex items-center gap-3 px-10 py-6 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-colors w-full text-left"
                     >
                       <LogOut className="w-5 h-5" />
                       Sair

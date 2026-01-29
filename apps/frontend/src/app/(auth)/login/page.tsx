@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 import { loginSchema, LoginForm } from '@/lib/schemas'
 
 export default function LoginPage() {
-  const { login } = useAuth()
+  const { login, loginAsDeveloper } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -170,9 +170,19 @@ export default function LoginPage() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-4 text-muted-foreground">ou</span>
+              <span className="bg-card px-10 py-6 text-muted-foreground">ou</span>
             </div>
           </div>
+
+          {/* MOCK: Botão para entrar como desenvolvedor */}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full h-11 rounded-xl text-sm border-dashed border-muted-foreground/30 hover:bg-secondary/50 dark:hover:text-primary/80"
+            onClick={loginAsDeveloper}
+          >
+            🚀 Entrar como Desenvolvedor (Mock)
+          </Button>
 
           <p className="text-center text-sm text-muted-foreground">
             Ainda nao tem uma conta?{' '}

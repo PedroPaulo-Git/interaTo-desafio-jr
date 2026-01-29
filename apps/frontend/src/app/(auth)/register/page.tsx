@@ -215,7 +215,7 @@ export default function RegisterPage() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-4 text-muted-foreground">ou</span>
+              <span className="bg-card px-10 py-6 text-muted-foreground">ou</span>
             </div>
           </div>
 

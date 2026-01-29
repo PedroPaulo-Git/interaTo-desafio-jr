@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { useRouter, usePathname } from 'next/navigation'
 import type { User, LoginCredentials, RegisterData, AuthResponse } from '@/lib/types'
 import { authApi } from '@/lib/api/auth-api'
+import { MOCK_USER, MOCK_TOKEN, initMockData, clearMockData } from '@/lib/mock-data'
 
 // ============================================
 // AUTH CONTEXT TYPES
@@ -14,7 +15,9 @@ interface AuthContextType {
   token: string | null
   isLoading: boolean
   isAuthenticated: boolean
+  isMockMode: boolean // MOCK: Flag para modo desenvolvedor
   login: (credentials: LoginCredentials) => Promise<void>
+  loginAsDeveloper: () => void // MOCK: Login sem backend
   register: (data: RegisterData) => Promise<void>
   logout: () => void
   updateUser: (user: User) => void
@@ -26,6 +29,7 @@ interface AuthContextType {
 
 const AUTH_TOKEN_KEY = 'petshop_auth_token'
 const AUTH_USER_KEY = 'petshop_auth_user'
+const MOCK_MODE_KEY = 'petshop_mock_mode' // MOCK: Flag de modo desenvolvedor
 const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password']
 
 // ============================================
@@ -41,6 +45,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
+  const [isMockMode, setIsMockMode] = useState(false) // MOCK: Estado do modo desenvolvedor
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const pathname = usePathname()
@@ -49,6 +54,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initAuth = () => {
       try {
+        // MOCK: Verificar se está em modo desenvolvedor
+        const mockMode = localStorage.getItem(MOCK_MODE_KEY) === 'true'
+        if (mockMode) {
+          setIsMockMode(true)
+          setToken(MOCK_TOKEN)
+          setUser(MOCK_USER)
+          setIsLoading(false)
+          return
+        }
+
         const storedToken = localStorage.getItem(AUTH_TOKEN_KEY)
         const storedUser = localStorage.getItem(AUTH_USER_KEY)
 
@@ -118,13 +133,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.replace('/dashboard')
   }, [router])
 
+  // MOCK: Login como desenvolvedor (sem backend)
+  const loginAsDeveloper = useCallback(() => {
+    initMockData()
+    setIsMockMode(true)
+    setUser(MOCK_USER)
+    setToken(MOCK_TOKEN)
+    localStorage.setItem(MOCK_MODE_KEY, 'true')
+    router.replace('/dashboard')
+  }, [router])
+
   const logout = useCallback(() => {
+    // MOCK: Limpar dados mockados no logout
+    if (isMockMode) {
+      clearMockData()
+      localStorage.removeItem(MOCK_MODE_KEY)
+      setIsMockMode(false)
+    }
+
     setUser(null)
     setToken(null)
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(AUTH_USER_KEY)
     router.replace('/login')
-  }, [router])
+  }, [router, isMockMode])
 
   const updateUser = useCallback((updatedUser: User) => {
     setUser(updatedUser)
@@ -136,7 +168,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     token,
     isLoading,
     isAuthenticated: !!token && !!user,
+    isMockMode,
     login,
+    loginAsDeveloper,
     register,
     logout,
     updateUser,

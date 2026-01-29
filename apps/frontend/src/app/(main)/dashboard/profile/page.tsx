@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Camera, 
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Camera,
   Save,
   Shield,
   Bell,
@@ -43,19 +43,19 @@ export default function ProfilePage() {
     .join('')
     .toUpperCase() || 'US'
 
-  const memberSince = user?.createdAt 
+  const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('pt-BR', {
-        month: 'long',
-        year: 'numeric',
-      })
+      month: 'long',
+      year: 'numeric',
+    })
     : 'Janeiro 2024'
 
   const handleSave = async () => {
     setIsSaving(true)
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     if (user) {
       updateUser({
         ...user,
@@ -63,7 +63,7 @@ export default function ProfilePage() {
         phone: formData.phone,
       })
     }
-    
+
     setIsSaving(false)
     setIsEditing(false)
     toast.success('Perfil atualizado com sucesso!')
@@ -78,8 +78,8 @@ export default function ProfilePage() {
   return (
     <div className="min-h-full pb-8">
       {/* Header */}
-      <motion.div 
-        className="relative  from-primary/20 via-primary/10 to-accent/10 px-4 sm:pl-14 sm:py-4 py-4"
+      <motion.div
+        className="relative  from-primary/20 via-primary/10 to-accent/10 px-10 py-6 sm:pl-14 sm:py-4 py-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -88,7 +88,7 @@ export default function ProfilePage() {
       </motion.div>
 
       {/* Profile Card */}
-      <motion.div 
+      <motion.div
         className="px-10 "
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -225,7 +225,7 @@ export default function ProfilePage() {
       </motion.div>
 
       {/* Settings */}
-      <motion.div 
+      <motion.div
         className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -262,7 +262,7 @@ export default function ProfilePage() {
       </motion.div>
 
       {/* Push Notifications Toggle */}
-      <motion.div 
+      <motion.div
         className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ export default function ProfilePage() {
       </motion.div>
 
       {/* Logout */}
-      <motion.div 
+      <motion.div
         className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

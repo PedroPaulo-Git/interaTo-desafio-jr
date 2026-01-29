@@ -288,7 +288,7 @@ export default function NewAnimalPage() {
                                                 <div className="w-16 h-16 rounded-full bg-background/80 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                                                     <Camera className="w-8 h-8 text-primary/80" />
                                                 </div>
-                                                <div className="text-center px-4">
+                                                <div className="text-center px-10 py-6">
                                                     <p className="font-medium text-foreground">Clique para adicionar foto</p>
                                                     <p className="text-xs mt-1">JPG, PNG ate 5MB</p>
                                                 </div>
