@@ -15,12 +15,16 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { useAuth } from '@/lib/auth/auth-context'
 import { animalsApi } from '@/lib/api/animals-api'
 import { ViewModeSelector } from '@/components/domain/view-mode-selector'
-import type { Animal, AnimalFormData, DialogState, ViewMode } from '@/lib/types'
+import { PetStats } from '@/components/domain/pet-stats'
+import type { Animal, AnimalFormData, DialogState, ViewMode, PetStatsData } from '@/lib/types'
 import { toast } from 'sonner'
+import { useTranslation } from '@/lib/i18n'
 
 export default function DashboardPage() {
   const { user, token } = useAuth()
+  const { t } = useTranslation()
   const [animals, setAnimals] = useState<Animal[]>([])
+  const [stats, setStats] = useState<PetStatsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [dialogState, setDialogState] = useState<DialogState>({
@@ -30,21 +34,25 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    const fetchAnimals = async () => {
+    const fetchData = async () => {
       if (!token) return
       try {
-        const data = await animalsApi.getAll(token)
-        setAnimals(data)
+        const [animalsData, statsData] = await Promise.all([
+          animalsApi.getAll(token),
+          animalsApi.getStats(token)
+        ])
+        setAnimals(animalsData)
+        setStats(statsData)
       } catch (error) {
-        toast.error('Erro ao carregar animais')
+        toast.error(t('animals.errorLoading'))
         console.error(error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchAnimals()
-  }, [token])
+    fetchData()
+  }, [token, t])
 
   const openDialog = (type: 'view' | 'edit' | 'delete', animal: Animal) => {
     setDialogState({ isOpen: true, type, animal })
@@ -59,9 +67,13 @@ export default function DashboardPage() {
     try {
       const updated = await animalsApi.update(token, dialogState.animal.id, data)
       setAnimals(prev => prev.map(a => a.id === updated.id ? updated : a))
-      toast.success('Animal atualizado com sucesso!')
+      toast.success(t('animals.updateSuccess'))
+
+      // Refresh stats
+      const newStats = await animalsApi.getStats(token)
+      setStats(newStats)
     } catch (error) {
-      toast.error('Erro ao atualizar animal')
+      toast.error(t('animals.errorUpdating'))
       throw error
     }
   }
@@ -71,9 +83,13 @@ export default function DashboardPage() {
     try {
       await animalsApi.delete(token, dialogState.animal.id)
       setAnimals(prev => prev.filter(a => a.id !== dialogState.animal?.id))
-      toast.success('Animal excluido com sucesso!')
+      toast.success(t('animals.deleteSuccess'))
+
+      // Refresh stats
+      const newStats = await animalsApi.getStats(token)
+      setStats(newStats)
     } catch (error) {
-      toast.error('Erro ao excluir animal')
+      toast.error(t('animals.errorDeleting'))
       throw error
     }
   }
@@ -81,14 +97,14 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Carregando dados..." />
+        <LoadingSpinner size="lg" text={t('common.loading')} />
       </div>
     )
   }
 
   return (
     <div className="min-h-full">
-      <StatsHeader userName={user?.name?.split(' ')[0] || 'Usuario'} />
+      <StatsHeader userName={user?.name?.split(' ')[0] || t('auth.name')} />
 
       <motion.div
         className="px-6 md:px-10 py-6"
@@ -96,7 +112,10 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <MenuGrid />
+        <div className="flex flex-col gap-6">
+          {stats && <PetStats stats={stats} />}
+          <MenuGrid />
+        </div>
       </motion.div>
 
       <Separator className="mx-4 w-auto" />
@@ -109,7 +128,7 @@ export default function DashboardPage() {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">
-            Animais recentes
+            {t('dashboard.recentAnimals')}
           </h2>
           <ViewModeSelector currentMode={viewMode} onModeChange={setViewMode} />
         </div>

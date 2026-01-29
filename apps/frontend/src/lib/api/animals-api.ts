@@ -1,4 +1,4 @@
-import type { Animal, AnimalFormData } from '@/lib/types'
+import type { Animal, AnimalFormData, PetStatsData } from '@/lib/types'
 import { getMockAnimals, getMockAnimal, createMockAnimal, updateMockAnimal, deleteMockAnimal, MOCK_TOKEN } from '@/lib/mock-data'
 
 // ============================================
@@ -154,5 +154,29 @@ export const animalsApi = {
     })
 
     if (!response.ok) throw new Error('Failed to delete animal')
+  },
+
+  async getStats(token: string): Promise<PetStatsData> {
+    if (isMockMode(token)) {
+      const animals = getMockAnimals()
+      const dogs = animals.filter(a => a.type === 'DOG').length
+      const cats = animals.filter(a => a.type === 'CAT').length
+      const total = animals.length
+      const avgAge = total > 0 ? animals.reduce((sum, a) => sum + a.age, 0) / total : 0
+
+      return {
+        total,
+        dogs,
+        cats,
+        avgAge: Math.round(avgAge * 10) / 10
+      }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/animals/stats`, {
+      headers: getAuthHeader(token),
+    })
+
+    if (!response.ok) throw new Error('Failed to fetch stats')
+    return response.json()
   },
 }

@@ -1,30 +1,32 @@
-'use client'
-
 import { motion } from 'framer-motion'
 import { Sparkles, Calendar, Sun, Moon, CloudSun } from 'lucide-react'
+import { useTranslation, getLocale } from '@/lib/i18n'
 
 type StatsHeaderProps = {
   userName: string
 }
 
 export function StatsHeader({ userName }: StatsHeaderProps) {
+  const { t } = useTranslation()
+  const locale = getLocale()
   const today = new Date()
   const hour = today.getHours()
-  const formattedDate = today.toLocaleDateString('pt-BR', {
+
+  const formattedDate = new Intl.DateTimeFormat(locale, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  })
+  }).format(today)
 
   // Capitalize first letter
   const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
 
   // Get greeting based on time
   const getGreeting = () => {
-    if (hour < 12) return { text: 'Bom dia', icon: Sun, color: 'text-yellow-500' }
-    if (hour < 18) return { text: 'Boa tarde', icon: CloudSun, color: 'text-orange-500' }
-    return { text: 'Boa noite', icon: Moon, color: 'text-indigo-400' }
+    if (hour < 12) return { text: t('greeting.morning'), icon: Sun, color: 'text-yellow-500' }
+    if (hour < 18) return { text: t('greeting.afternoon'), icon: CloudSun, color: 'text-orange-500' }
+    return { text: t('greeting.evening'), icon: Moon, color: 'text-indigo-400' }
   }
 
   const greeting = getGreeting()

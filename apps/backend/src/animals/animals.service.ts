@@ -109,4 +109,33 @@ export class AnimalsService {
 
         return this.prisma.animal.delete({ where: { id } });
     }
+
+    async getStats() {
+        const [total, byType, avgAge] = await Promise.all([
+            this.prisma.animal.count(),
+            this.prisma.animal.groupBy({
+                by: ['type'],
+                _count: {
+                    type: true,
+                },
+            }),
+            this.prisma.animal.aggregate({
+                _avg: {
+                    age: true,
+                },
+            }),
+        ]);
+
+        const statsByType = byType.reduce((acc, curr) => {
+            acc[curr.type] = curr._count.type;
+            return acc;
+        }, { DOG: 0, CAT: 0 });
+
+        return {
+            total,
+            dogs: statsByType.DOG,
+            cats: statsByType.CAT,
+            avgAge: Math.round((avgAge._avg.age || 0) * 10) / 10,
+        };
+    }
 }

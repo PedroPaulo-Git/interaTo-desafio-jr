@@ -19,6 +19,13 @@ export interface Animal {
   isOwner?: boolean
 }
 
+export interface PetStatsData {
+  total: number
+  dogs: number
+  cats: number
+  avgAge: number
+}
+
 export interface User {
   id: string
   name: string

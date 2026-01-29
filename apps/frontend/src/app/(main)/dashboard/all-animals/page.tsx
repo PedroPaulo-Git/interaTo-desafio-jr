@@ -103,7 +103,7 @@ export default function AllAnimalsPage() {
     return (
         <div className="min-h-full">
             <motion.div
-                className="px-10 py-6 py-6 bg-gradient-to-br from-primary/5 via-secondary to-accent/5"
+                className="px-10 py-6 bg-linear-to-br from-primary/5 via-secondary to-accent/5 dark:bg-none dark:bg-card dark:border dark:border-white/5"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
             >
@@ -121,7 +121,7 @@ export default function AllAnimalsPage() {
             </motion.div>
 
             <motion.div
-                className="px-10 py-6 py-4 space-y-4"
+                className="px-10 py-6 space-y-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}

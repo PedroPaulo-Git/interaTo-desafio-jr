@@ -25,9 +25,12 @@ import { Switch } from '@/components/ui/switch'
 import { ButtonSpinner } from '@/components/ui/loading-spinner'
 import { useAuth } from '@/lib/auth/auth-context'
 import { toast } from 'sonner'
+import { useTranslation, getLocale } from '@/lib/i18n'
 
 export default function ProfilePage() {
   const { user, logout, updateUser } = useAuth()
+  const { t } = useTranslation()
+  const locale = getLocale()
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
@@ -44,11 +47,11 @@ export default function ProfilePage() {
     .toUpperCase() || 'US'
 
   const memberSince = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString('pt-BR', {
+    ? new Date(user.createdAt).toLocaleDateString(locale, {
       month: 'long',
       year: 'numeric',
     })
-    : 'Janeiro 2024'
+    : '2024'
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -66,25 +69,25 @@ export default function ProfilePage() {
 
     setIsSaving(false)
     setIsEditing(false)
-    toast.success('Perfil atualizado com sucesso!')
+    toast.success(t('profile.updateSuccess'))
   }
 
   const settingsItems = [
-    { icon: Bell, label: 'Notificacoes', description: 'Configurar alertas e lembretes' },
-    { icon: Shield, label: 'Seguranca', description: 'Senha e autenticacao' },
-    { icon: Palette, label: 'Aparencia', description: 'Tema e personalizacao' },
+    { icon: Bell, label: t('profile.notifications'), description: t('profile.notificationsDescription') },
+    { icon: Shield, label: t('profile.securityLabel'), description: t('profile.securityDescription') },
+    { icon: Palette, label: t('profile.appearanceLabel'), description: t('profile.appearanceDescription') },
   ]
 
   return (
     <div className="min-h-full pb-8">
       {/* Header */}
       <motion.div
-        className="relative  from-primary/20 via-primary/10 to-accent/10 px-10 py-6 sm:pl-14 sm:py-4 py-4"
+        className="relative  from-primary/20 via-primary/10 to-accent/10 px-10 py-6 sm:pl-14 sm:py-4 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <h1 className="text-xl font-bold text-foreground">Meu Perfil</h1>
-        <p className="text-sm text-muted-foreground">Gerencie suas informacoes</p>
+        <h1 className="text-xl font-bold text-foreground">{t('profile.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('profile.manageInfo')}</p>
       </motion.div>
 
       {/* Profile Card */}
@@ -110,7 +113,7 @@ export default function ProfilePage() {
                 </button>
               </div>
               <h2 className="mt-4 text-xl font-bold text-foreground">{user?.name}</h2>
-              <p className="text-sm text-muted-foreground">Membro desde {memberSince}</p>
+              <p className="text-sm text-muted-foreground">{t('profile.memberSince')} {memberSince}</p>
             </div>
 
             <Separator className="my-6" />
@@ -120,7 +123,7 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium flex items-center gap-2">
                   <User className="w-4 h-4 text-muted-foreground" />
-                  Nome completo
+                  {t('profile.fullName')}
                 </Label>
                 <Input
                   id="name"
@@ -134,7 +137,7 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
                   <Mail className="w-4 h-4 text-muted-foreground" />
-                  E-mail
+                  {t('auth.email')}
                 </Label>
                 <Input
                   id="email"
@@ -143,13 +146,13 @@ export default function ProfilePage() {
                   className="h-12 rounded-xl bg-secondary/50"
                   disabled
                 />
-                <p className="text-xs text-muted-foreground">O e-mail nao pode ser alterado</p>
+                <p className="text-xs text-muted-foreground">{t('profile.emailNote')}</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  Telefone
+                  {t('auth.phone')}
                 </Label>
                 <Input
                   id="phone"
@@ -164,7 +167,7 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
-                  Membro desde
+                  {t('profile.memberSince')}
                 </Label>
                 <Input
                   value={memberSince}
@@ -190,7 +193,7 @@ export default function ProfilePage() {
                       }}
                       disabled={isSaving}
                     >
-                      Cancelar
+                      {t('common.cancel')}
                     </Button>
                     <Button
                       className="flex-1 h-12 rounded-xl gap-2"
@@ -200,12 +203,12 @@ export default function ProfilePage() {
                       {isSaving ? (
                         <>
                           <ButtonSpinner />
-                          Salvando...
+                          {t('common.saving')}
                         </>
                       ) : (
                         <>
                           <Save className="w-4 h-4" />
-                          Salvar
+                          {t('common.save')}
                         </>
                       )}
                     </Button>
@@ -215,7 +218,7 @@ export default function ProfilePage() {
                     className="w-full h-12 rounded-xl"
                     onClick={() => setIsEditing(true)}
                   >
-                    Editar Perfil
+                    {t('profile.editBtn')}
                   </Button>
                 )}
               </div>
@@ -223,18 +226,19 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </motion.div>
-
       {/* Settings */}
       <motion.div
-        className="px-10 mt-6"
+        id="settings"
+       className="px-10 py-6 bg-linear-to-br from-primary/5 via-secondary to-accent/5 dark:via-background dark:from-primary/10 dark:to-accent/5"
+
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
         <Card className="rounded-3xl">
           <CardHeader>
-            <CardTitle className="text-lg">Configuracoes</CardTitle>
-            <CardDescription>Gerencie suas preferencias</CardDescription>
+            <CardTitle className="text-lg">{t('profile.settings')}</CardTitle>
+            <CardDescription>{t('profile.settingsDescription')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {settingsItems.map((item) => {
@@ -276,8 +280,8 @@ export default function ProfilePage() {
                   <Bell className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <p className="font-medium text-foreground">Notificacoes Push</p>
-                  <p className="text-sm text-muted-foreground">Receber alertas no dispositivo</p>
+                  <p className="font-medium text-foreground">{t('profile.pushNotifications')}</p>
+                  <p className="text-sm text-muted-foreground">{t('profile.pushDescription')}</p>
                 </div>
               </div>
               <Switch defaultChecked />
@@ -299,7 +303,7 @@ export default function ProfilePage() {
           onClick={logout}
         >
           <LogOut className="w-5 h-5" />
-          Sair da conta
+          {t('profile.logoutBtn')}
         </Button>
       </motion.div>
     </div>

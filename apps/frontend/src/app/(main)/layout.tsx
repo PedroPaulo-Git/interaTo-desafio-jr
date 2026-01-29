@@ -37,13 +37,8 @@ import {
 } from '@/components/ui/sheet'
 import { ProtectedRoute } from '@/components/auth/protected-route'
 import { useAuth } from '@/lib/auth/auth-context'
-
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/dashboard/animals', label: 'Meus Animais', icon: PawPrint },
-  { href: '/dashboard/animals/new', label: 'Cadastrar', icon: Plus },
-  { href: '/dashboard/all-animals', label: 'Todos', icon: List },
-]
+import { LanguageSelector } from '@/components/domain/language-selector'
+import { useTranslation } from '@/lib/i18n'
 
 export default function MainLayout({
   children,
@@ -55,6 +50,14 @@ export default function MainLayout({
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const theme = resolvedTheme; // Declare the theme variable
+  const { t } = useTranslation()
+
+  const getNavItems = () => [
+    { href: '/dashboard', label: t('dashboard.title'), icon: Home },
+    { href: '/dashboard/animals', label: t('dashboard.myAnimals'), icon: PawPrint },
+    { href: '/dashboard/animals/new', label: t('dashboard.newAnimal'), icon: Plus },
+    { href: '/dashboard/all-animals', label: t('dashboard.allAnimals'), icon: List },
+  ]
 
   React.useEffect(() => {
     setMounted(true)
@@ -82,14 +85,14 @@ export default function MainLayout({
           animate={{ y: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
-          <div className="flex items-center justify-between px-10 h-16">
+          <div className="flex items-center justify-between px-2 sm:px-10 h-16">
             <Link href="/dashboard" className="flex items-center gap-2">
               <motion.div
                 className=" rounded-xl py-2 flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Image src="/img/LogoHigh.png" alt="Logo" className="w-24 h-24" width={100} height={100} />
+                <Image src="/img/LogoHigh.png" alt="Logo" className="sm:w-24 sm:h-24 w-16 h-16" width={100} height={100} />
                 {/* <PawPrint className="w-5 h-5 text-primary-foreground" /> */}
               </motion.div>
 
@@ -101,23 +104,22 @@ export default function MainLayout({
                 variant="ghost"
                 size="icon"
                 onClick={toggleTheme}
-                className="relative overflow-hidden"
+                className="relative overflow-hidden rounded-xl bg-transparent hover:bg-secondary text-muted-foreground hover:text-foreground transition-all duration-200"
               >
-                <div className="relative w-5 h-5">
+                <div className="relative w-5 h-5 flex items-center justify-center">
                   <AnimatePresence mode="popLayout" initial={false}>
                     {mounted && (
                       <motion.div
                         key={theme}
-                        className="absolute inset-0"
                         initial={{ rotate: -90, scale: 0, opacity: 0 }}
                         animate={{ rotate: 0, scale: 1, opacity: 1 }}
                         exit={{ rotate: 90, scale: 0, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                        transition={{ duration: 0.23, ease: "circOut" }}
                       >
                         {theme === 'dark' ? (
-                          <Sun className="w-5 h-5 text-yellow-500" />
+                          <Sun className="w-5 h-5 text-amber-400" />
                         ) : (
-                          <Moon className="w-5 h-5 text-muted-foreground" />
+                          <Moon className="w-5 h-5" />
                         )}
                       </motion.div>
                     )}
@@ -125,11 +127,18 @@ export default function MainLayout({
                 </div>
               </Button>
 
+              {/* Language Selector */}
+              <LanguageSelector />
+
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5 text-muted-foreground" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative rounded-xl bg-transparent hover:bg-secondary text-muted-foreground hover:text-foreground transition-all duration-200"
+              >
+                <Bell className="w-5 h-5" />
                 <motion.span
-                  className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full"
+                  className="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full ring-2 ring-background"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
@@ -138,37 +147,48 @@ export default function MainLayout({
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <Avatar className="w-8 h-8 border-2 border-primary/20">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-xl bg-transparent hover:bg-secondary transition-all duration-200 p-0"
+                  >
+                    <Avatar className="w-8 h-8 border border-border shadow-sm">
                       <AvatarImage src={user?.avatarUrl || undefined} alt={user?.name} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                         {userInitials}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-3 py-2 border-b border-border">
-                    <p className="font-medium text-foreground">{user?.name}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 shadow-xl border-border/50">
+                  <div className="px-3 py-2 mb-1">
+                    <p className="font-bold text-foreground">{user?.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
+                  <DropdownMenuSeparator className="mx-1" />
                   <Link href="/dashboard/profile">
-                    <DropdownMenuItem className="gap-2 cursor-pointer">
-                      <User className="w-4 h-4" />
-                      Meu Perfil
+                    <DropdownMenuItem className="gap-3 cursor-pointer rounded-xl py-2.5 focus:bg-primary/10 group transition-colors">
+                      <User className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="font-medium group-hover:text-primary transition-colors">
+                        {t('dashboard.profile')}
+                      </span>
                     </DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem className="gap-2 cursor-pointer">
-                    <Settings className="w-4 h-4" />
-                    Configuracoes
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  <Link href="/dashboard/profile#settings">
+                    <DropdownMenuItem className="gap-3 cursor-pointer rounded-xl py-2.5 focus:bg-primary/10 group transition-colors">
+                      <Settings className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="font-medium group-hover:text-primary transition-colors">
+                        {t('profile.settings')}
+                      </span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator className="mx-1" />
                   <DropdownMenuItem
                     onClick={logout}
-                    className="gap-2 text-destructive focus:text-destructive cursor-pointer"
+                    className="gap-3 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer rounded-xl py-2.5 group transition-colors"
                   >
-                    <LogOut className="w-4 h-4" />
-                    Sair
+                    <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <span className="font-medium">{t('auth.logout')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -188,14 +208,14 @@ export default function MainLayout({
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="mt-6 flex flex-col gap-2">
-                    {navItems.map((item) => {
+                    {getNavItems().map((item) => {
                       const Icon = item.icon
                       const isActive = pathname === item.href
                       return (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`flex items-center gap-3 px-10 py-6 py-3 rounded-xl transition-colors ${isActive
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
                             ? 'bg-primary text-primary-foreground'
                             : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                             }`}
@@ -208,17 +228,17 @@ export default function MainLayout({
                     <div className="border-t border-border my-4" />
                     <Link
                       href="/dashboard/profile"
-                      className="flex items-center gap-3 px-10 py-6 py-3 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     >
                       <User className="w-5 h-5" />
-                      Meu Perfil
+                      {t('dashboard.profile')}
                     </Link>
                     <button
                       onClick={logout}
-                      className="flex items-center gap-3 px-10 py-6 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-colors w-full text-left"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-colors w-full text-left"
                     >
                       <LogOut className="w-5 h-5" />
-                      Sair
+                      {t('auth.logout')}
                     </button>
                   </nav>
                 </SheetContent>
@@ -250,7 +270,7 @@ export default function MainLayout({
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
           <div className="flex items-center justify-around h-16 px-2">
-            {navItems.map((item) => {
+            {getNavItems().map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
               return (

@@ -32,6 +32,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { animalSchema, type AnimalForm } from '@/lib/schemas'
 import Image from 'next/image'
+import { useTranslation, getLocale } from '@/lib/i18n'
 
 // ============================================
 // SLIDE PANEL BASE
@@ -111,10 +112,13 @@ interface ViewAnimalDialogProps {
 }
 
 export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: ViewAnimalDialogProps) {
+  const { t } = useTranslation()
+  const locale = getLocale()
+
   if (!animal) return null
 
   const PetIcon = animal.type === 'DOG' ? Dog : Cat
-  const createdDate = new Date(animal.createdAt).toLocaleDateString('pt-BR', {
+  const createdDate = new Date(animal.createdAt).toLocaleDateString(locale, {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -124,7 +128,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
     <SlidePanel
       isOpen={isOpen}
       onClose={onClose}
-      title="Detalhes do Animal"
+      title={t('animals.details')}
       icon={<PawPrint className="w-5 h-5 text-primary" />}
     >
       <div className="space-y-6">
@@ -142,7 +146,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
               <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
                 <PetIcon className="w-10 h-10 text-primary" />
               </div>
-              <p className="text-sm text-muted-foreground">Sem foto</p>
+              <p className="text-sm text-muted-foreground">{t('animals.noPhoto')}</p>
             </div>
           )}
         </div>
@@ -151,11 +155,11 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold text-foreground">{animal.name}</h3>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${animal.type === 'DOG'
+            <span className={`px-3 py-1 rounded-full text-sm font-medium dark:text-gray-400 ${animal.type === 'DOG'
               ? 'bg-accent/20 text-accent-foreground'
               : 'bg-primary/20 text-primary'
               }`}>
-              {animal.type === 'DOG' ? 'Cachorro' : 'Gato'}
+              {animal.type === 'DOG' ? t('animals.dog') : t('animals.cat')}
             </span>
           </div>
 
@@ -163,7 +167,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
               <PawPrint className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Raca</p>
+                <p className="text-xs text-muted-foreground">{t('animals.breed')}</p>
                 <p className="font-medium text-foreground">{animal.breed}</p>
               </div>
             </div>
@@ -171,9 +175,9 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
               <Calendar className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Idade</p>
+                <p className="text-xs text-muted-foreground">{t('animals.age')}</p>
                 <p className="font-medium text-foreground">
-                  {animal.age} {animal.age === 1 ? 'ano' : 'anos'}
+                  {animal.age} {t('animals.years')}
                 </p>
               </div>
             </div>
@@ -181,7 +185,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
               <User className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Tutor</p>
+                <p className="text-xs text-muted-foreground">{t('animals.owner')}</p>
                 <p className="font-medium text-foreground">{animal.ownerName}</p>
               </div>
             </div>
@@ -189,7 +193,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
               <Phone className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Contato</p>
+                <p className="text-xs text-muted-foreground">{t('animals.contact')}</p>
                 <p className="font-medium text-foreground">{animal.ownerContact}</p>
               </div>
             </div>
@@ -197,7 +201,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
             <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
               <Calendar className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Cadastrado em</p>
+                <p className="text-xs text-muted-foreground">{t('animals.registeredAt')}</p>
                 <p className="font-medium text-foreground">{createdDate}</p>
               </div>
             </div>
@@ -209,11 +213,11 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
           <div className="flex gap-3 pt-4 border-t border-border">
             <Button
               variant="outline"
-              className="flex-1 h-12 rounded-xl gap-2 bg-transparent"
+              className="flex-1 h-12 rounded-xl gap-2 bg-transparent dark:text-white"
               onClick={onEdit}
             >
               <Pencil className="w-4 h-4" />
-              Editar
+              {t('common.edit')}
             </Button>
             <Button
               variant="destructive"
@@ -221,7 +225,7 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
               onClick={onDelete}
             >
               <Trash2 className="w-4 h-4" />
-              Excluir
+              {t('common.delete')}
             </Button>
           </div>
         )}
@@ -242,6 +246,7 @@ interface EditAnimalDialogProps {
 }
 
 export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimalDialogProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const {
     register,
@@ -282,7 +287,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
     <SlidePanel
       isOpen={isOpen}
       onClose={onClose}
-      title="Editar Animal"
+      title={t('animals.edit')}
       icon={<Pencil className="w-5 h-5 text-primary" />}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -298,13 +303,13 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
           ) : (
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <Camera className="w-8 h-8" />
-              <p className="text-sm">Clique para adicionar foto (em breve)</p>
+              <p className="text-sm">{t('animals.clickToAdd')}</p>
             </div>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-name">Nome</Label>
+          <Label htmlFor="edit-name">{t('animals.name')}</Label>
           <Input
             id="edit-name"
             className={`h-12 rounded-xl ${errors.name ? 'border-destructive' : ''}`}
@@ -316,7 +321,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-type">Tipo</Label>
+            <Label htmlFor="edit-type">{t('animals.type')}</Label>
             <Select
               defaultValue={animal?.type}
               onValueChange={(value: 'DOG' | 'CAT') => setValue('type', value, { shouldValidate: true })}
@@ -326,15 +331,15 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="DOG">Cachorro</SelectItem>
-                <SelectItem value="CAT">Gato</SelectItem>
+                <SelectItem value="DOG">{t('animals.dog')}</SelectItem>
+                <SelectItem value="CAT">{t('animals.cat')}</SelectItem>
               </SelectContent>
             </Select>
             {errors.type && <p className="text-xs text-destructive ml-1">{errors.type.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-age">Idade</Label>
+            <Label htmlFor="edit-age">{t('animals.age')}</Label>
             <Input
               id="edit-age"
               type="number"
@@ -347,7 +352,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-breed">Raca</Label>
+          <Label htmlFor="edit-breed">{t('animals.breed')}</Label>
           <Input
             id="edit-breed"
             className={`h-12 rounded-xl ${errors.breed ? 'border-destructive' : ''}`}
@@ -358,7 +363,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-owner">Nome do Tutor</Label>
+          <Label htmlFor="edit-owner">{t('animals.ownerName')}</Label>
           <Input
             id="edit-owner"
             className={`h-12 rounded-xl ${errors.ownerName ? 'border-destructive' : ''}`}
@@ -369,7 +374,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-contact">Contato</Label>
+          <Label htmlFor="edit-contact">{t('animals.contact')}</Label>
           <Input
             id="edit-contact"
             className={`h-12 rounded-xl ${errors.ownerContact ? 'border-destructive' : ''}`}
@@ -387,7 +392,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
             onClick={onClose}
             disabled={isLoading}
           >
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
@@ -397,12 +402,12 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
             {isLoading ? (
               <>
                 <ButtonSpinner />
-                Salvando...
+                {t('common.saving')}
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Salvar
+                {t('common.save')}
               </>
             )}
           </Button>
@@ -424,6 +429,7 @@ interface DeleteAnimalDialogProps {
 }
 
 export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: DeleteAnimalDialogProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleDelete = async () => {
@@ -442,7 +448,7 @@ export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: Delet
     <SlidePanel
       isOpen={isOpen}
       onClose={onClose}
-      title="Confirmar Exclusao"
+      title={t('animals.confirmDelete')}
       icon={<AlertTriangle className="w-5 h-5 text-destructive" />}
     >
       <div className="space-y-6">
@@ -458,11 +464,10 @@ export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: Delet
 
           <div className="space-y-2">
             <h3 className="text-xl font-semibold text-foreground">
-              Excluir {animal.name}?
+              {t('common.delete')} {animal.name}?
             </h3>
             <p className="text-muted-foreground">
-              Esta acao nao pode ser desfeita. O registro do animal sera
-              permanentemente removido do sistema.
+              {t('animals.deleteWarning')}
             </p>
           </div>
         </div>
@@ -474,7 +479,7 @@ export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: Delet
             onClick={onClose}
             disabled={isLoading}
           >
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button
             variant="destructive"
@@ -485,12 +490,12 @@ export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: Delet
             {isLoading ? (
               <>
                 <ButtonSpinner />
-                Excluindo...
+                {t('animals.deleting')}
               </>
             ) : (
               <>
                 <Trash2 className="w-4 h-4" />
-                Excluir
+                {t('common.delete')}
               </>
             )}
           </Button>

@@ -1,8 +1,11 @@
+'use client'
+
 import React from 'react'
 import { LayoutList, LayoutGrid, Grid3x3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ViewMode } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n'
 
 interface ViewModeSelectorProps {
     currentMode: ViewMode
@@ -11,6 +14,8 @@ interface ViewModeSelectorProps {
 }
 
 export function ViewModeSelector({ currentMode, onModeChange, disabled }: ViewModeSelectorProps) {
+    const { t } = useTranslation()
+
     return (
         <div className="flex items-center p-1 bg-secondary/50 rounded-lg border border-border">
             <Button
@@ -24,7 +29,7 @@ export function ViewModeSelector({ currentMode, onModeChange, disabled }: ViewMo
                 )}
                 onClick={() => onModeChange('list')}
                 disabled={disabled}
-                title="Lista"
+                title={t('viewMode.list')}
             >
                 <LayoutList className="w-4 h-4" />
             </Button>
@@ -40,7 +45,7 @@ export function ViewModeSelector({ currentMode, onModeChange, disabled }: ViewMo
                 )}
                 onClick={() => onModeChange('grid')}
                 disabled={disabled}
-                title="Grade"
+                title={t('viewMode.grid')}
             >
                 <LayoutGrid className="w-4 h-4" />
             </Button>
@@ -56,7 +61,7 @@ export function ViewModeSelector({ currentMode, onModeChange, disabled }: ViewMo
                 )}
                 onClick={() => onModeChange('compact')}
                 disabled={disabled}
-                title="Compacto"
+                title={t('viewMode.compact')}
             >
                 <Grid3x3 className="w-4 h-4" />
             </Button>

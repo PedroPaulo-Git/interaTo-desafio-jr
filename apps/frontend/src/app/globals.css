@@ -125,21 +125,24 @@
     @apply scroll-smooth;
   }
   
+  /* DISABLE ALL transitions during theme change - prevents flicker */
+  html.theme-transitioning,
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  
   html,
   body,
   * {
     transition-property: background-color, border-color, color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    transition-duration: 200ms;
   }
   
   body {
     @apply bg-background text-foreground;
-  }
-  
-  /* Disable transitions on initial page load */
-  html.no-transitions,
-  html.no-transitions * {
-    transition: none !important;
   }
 }

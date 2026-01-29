@@ -15,9 +15,11 @@ import { ButtonSpinner } from '@/components/ui/loading-spinner'
 import { useAuth } from '@/lib/auth/auth-context'
 import { toast } from 'sonner'
 import { loginSchema, LoginForm } from '@/lib/schemas'
+import { useTranslation } from '@/lib/i18n'
 
 export default function LoginPage() {
   const { login, loginAsDeveloper } = useAuth()
+  const { t } = useTranslation()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -72,10 +74,10 @@ export default function LoginPage() {
           </motion.div>
 
           <CardTitle className="text-2xl font-bold text-foreground">
-            Bem-vindo de volta!
+            {t('dashboard.welcome')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Entre na sua conta para gerenciar o petshop
+            {t('auth.loginDescription')}
           </CardDescription>
         </CardHeader>
 
@@ -83,7 +85,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                E-mail
+                {t('auth.email')}
               </Label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -106,7 +108,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Senha
+                {t('auth.password')}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -140,7 +142,7 @@ export default function LoginPage() {
                 href="/forgot-password"
                 className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
               >
-                Esqueceu a senha?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -157,7 +159,7 @@ export default function LoginPage() {
               ) : (
                 <span className="flex items-center gap-2">
                   <LogIn className="w-5 h-5" />
-                  Entrar
+                  {t('auth.login')}
                 </span>
               )}
             </Button>
@@ -170,7 +172,7 @@ export default function LoginPage() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-10 py-6 text-muted-foreground">ou</span>
+              <span className="bg-card px-10 py-6 text-muted-foreground">{t('common.or')}</span>
             </div>
           </div>
 
@@ -181,16 +183,16 @@ export default function LoginPage() {
             className="w-full h-11 rounded-xl text-sm border-dashed border-muted-foreground/30 hover:bg-secondary/50 dark:hover:text-primary/80"
             onClick={loginAsDeveloper}
           >
-            🚀 Entrar como Desenvolvedor (Mock)
+            🚀 {t('auth.loginDeveloper')}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
-            Ainda nao tem uma conta?{' '}
+            {t('auth.noAccount')}{' '}
             <Link
               href="/register"
               className="font-semibold text-primary hover:text-primary/80 transition-colors"
             >
-              Cadastre-se
+              {t('auth.register')}
             </Link>
           </p>
         </CardFooter>

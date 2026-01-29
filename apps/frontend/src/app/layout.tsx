@@ -6,7 +6,7 @@ import { AuthProvider } from '@/lib/auth/auth-context'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
-const poppins = Poppins({ 
+const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-poppins',
@@ -15,7 +15,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'PetShop Manager',
   description: 'Sistema de gerenciamento para petshop - Cuide dos seus clientes peludos',
-    generator: 'v0.app'
+  generator: 'v0.app'
 }
 
 export const viewport: Viewport = {
@@ -33,12 +33,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className={`${poppins.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
-          disableTransitionOnChange={false}
         >
           <AuthProvider>
             {children}

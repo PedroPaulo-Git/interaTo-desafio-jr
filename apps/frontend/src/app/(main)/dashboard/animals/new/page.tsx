@@ -24,10 +24,12 @@ import type { AnimalType } from '@/lib/types'
 import { toast } from 'sonner'
 import { animalSchema, AnimalForm } from '@/lib/schemas'
 import Image from 'next/image'
+import { useTranslation } from '@/lib/i18n'
 
 export default function NewAnimalPage() {
     const router = useRouter()
     const { token, user } = useAuth()
+    const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -128,9 +130,9 @@ export default function NewAnimalPage() {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <div>
-                        <h1 className="text-xl font-bold text-foreground">Cadastrar Animal</h1>
+                        <h1 className="text-xl font-bold text-foreground">{t('animals.new')}</h1>
                         <p className="text-sm text-muted-foreground">
-                            Adicione um novo pet ao sistema
+                            {t('animals.newSubtitle')}
                         </p>
                     </div>
                 </div>
@@ -152,8 +154,8 @@ export default function NewAnimalPage() {
                                 <PetIcon className="w-6 h-6 text-accent" />
                             </motion.div>
                             <div>
-                                <CardTitle className="text-lg">Dados do Animal</CardTitle>
-                                <CardDescription>Preencha as informacoes do pet</CardDescription>
+                                <CardTitle className="text-lg">{t('animals.petData')}</CardTitle>
+                                <CardDescription>{t('animals.petDataSubtitle')}</CardDescription>
                             </div>
                         </div>
                     </CardHeader>
@@ -168,7 +170,7 @@ export default function NewAnimalPage() {
                                     <div className="space-y-2">
                                         <Label htmlFor="name" className="flex items-center gap-2">
                                             <PawPrint className="w-4 h-4 text-muted-foreground" />
-                                            Nome do Animal
+                                            {t('animals.name')}
                                         </Label>
                                         <Input
                                             id="name"
@@ -182,25 +184,25 @@ export default function NewAnimalPage() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="type">Tipo</Label>
+                                            <Label htmlFor="type">{t('animals.type')}</Label>
                                             <Select
                                                 onValueChange={(value: AnimalType) => setValue('type', value, { shouldValidate: true })}
                                                 disabled={isLoading}
                                             >
                                                 <SelectTrigger className={`h-12 rounded-xl ${errors.type ? 'border-destructive' : ''}`}>
-                                                    <SelectValue placeholder="Selecione" />
+                                                    <SelectValue placeholder={t('common.select')} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="DOG">
                                                         <span className="flex items-center gap-2">
                                                             <Dog className="w-4 h-4" />
-                                                            Cachorro
+                                                            {t('animals.dog')}
                                                         </span>
                                                     </SelectItem>
                                                     <SelectItem value="CAT">
                                                         <span className="flex items-center gap-2">
                                                             <Cat className="w-4 h-4" />
-                                                            Gato
+                                                            {t('animals.cat')}
                                                         </span>
                                                     </SelectItem>
                                                 </SelectContent>
@@ -209,7 +211,7 @@ export default function NewAnimalPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="age">Idade (anos)</Label>
+                                            <Label htmlFor="age">{t('animals.age')} ({t('animals.years')})</Label>
                                             <Input
                                                 id="age"
                                                 type="number"
@@ -225,7 +227,7 @@ export default function NewAnimalPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="breed">Raca</Label>
+                                        <Label htmlFor="breed">{t('animals.breed')}</Label>
                                         <Input
                                             id="breed"
                                             placeholder="Ex: Golden Retriever"
@@ -239,7 +241,7 @@ export default function NewAnimalPage() {
 
                                 {/* Right Column: Image Upload */}
                                 <div className="flex flex-col gap-2">
-                                    <Label>Foto do Pet</Label>
+                                    <Label>{t('animals.photo')}</Label>
                                     <div
                                         onClick={() => fileInputRef.current?.click()}
                                         className={`
@@ -270,7 +272,7 @@ export default function NewAnimalPage() {
                                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                     <p className="text-white font-medium flex items-center gap-2">
                                                         <Camera className="w-5 h-5" />
-                                                        Alterar foto
+                                                        {t('animals.changePhoto')}
                                                     </p>
                                                 </div>
                                                 <Button
@@ -289,8 +291,8 @@ export default function NewAnimalPage() {
                                                     <Camera className="w-8 h-8 text-primary/80" />
                                                 </div>
                                                 <div className="text-center px-10 py-6">
-                                                    <p className="font-medium text-foreground">Clique para adicionar foto</p>
-                                                    <p className="text-xs mt-1">JPG, PNG ate 5MB</p>
+                                                    <p className="font-medium text-foreground">{t('animals.clickToAddPhoto')}</p>
+                                                    <p className="text-xs mt-1">JPG, PNG {t('common.upTo')} 5MB</p>
                                                 </div>
                                             </div>
                                         )}
@@ -301,12 +303,12 @@ export default function NewAnimalPage() {
 
                             {/* Owner Section */}
                             <div className="pt-6 border-t border-border">
-                                <h3 className="font-semibold text-foreground mb-4">Dados do Tutor</h3>
+                                <h3 className="font-semibold text-foreground mb-4">{t('animals.ownerSection')}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="ownerName" className="flex items-center gap-2">
                                             <User className="w-4 h-4 text-muted-foreground" />
-                                            Nome do Tutor
+                                            {t('animals.ownerName')}
                                         </Label>
                                         <Input
                                             id="ownerName"
@@ -321,7 +323,7 @@ export default function NewAnimalPage() {
                                     <div className="space-y-2">
                                         <Label htmlFor="ownerContact" className="flex items-center gap-2">
                                             <Phone className="w-4 h-4 text-muted-foreground" />
-                                            Contato do Tutor
+                                            {t('animals.contact')}
                                         </Label>
                                         <Input
                                             id="ownerContact"
@@ -345,12 +347,12 @@ export default function NewAnimalPage() {
                                     {isLoading ? (
                                         <>
                                             <ButtonSpinner />
-                                            Cadastrando...
+                                            {t('common.saving')}
                                         </>
                                     ) : (
                                         <>
                                             <Save className="w-5 h-5" />
-                                            Cadastrar Animal
+                                            {t('animals.new')}
                                         </>
                                     )}
                                 </Button>

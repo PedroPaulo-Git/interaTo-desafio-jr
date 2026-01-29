@@ -12,8 +12,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { Animal, ViewMode } from '@/lib/types'
 import { cn } from "@/lib/utils"
+import { useTranslation } from '@/lib/i18n'
+import type { Animal, ViewMode } from '@/lib/types'
 
 type AnimalCardProps = {
   animal: Animal
@@ -32,6 +33,7 @@ export function AnimalCard({
   index = 0,
   viewMode = 'list'
 }: AnimalCardProps) {
+  const { t } = useTranslation()
   const statusColors = {
     DOG: 'bg-accent',
     CAT: 'bg-primary',
@@ -103,16 +105,16 @@ export function AnimalCard({
             </h3>
           </div>
           <p className={cn("text-muted-foreground truncate", isCompact ? "text-xs" : "text-sm")}>
-            {animal.breed} {(!isCompact) && `• ${animal.age} ${animal.age === 1 ? 'ano' : 'anos'}`}
+            {animal.breed} {(!isCompact) && `• ${animal.age} ${t('animals.years')}`}
           </p>
           {isCompact && (
             <p className="text-[10px] text-muted-foreground truncate">
-              {animal.age} {animal.age === 1 ? 'ano' : 'anos'}
+              {animal.age} {t('animals.years')}
             </p>
           )}
           {!isCompact && (
             <p className="text-xs text-muted-foreground truncate mt-0.5">
-              Tutor: {animal.ownerName}
+              {t('animals.owner')}: {animal.ownerName}
             </p>
           )}
         </div>
@@ -147,7 +149,7 @@ export function AnimalCard({
                   className="gap-2"
                 >
                   <Pencil className="w-4 h-4" />
-                  Editar
+                  {t('common.edit')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
@@ -157,7 +159,7 @@ export function AnimalCard({
                   className="gap-2 text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Excluir
+                  {t('common.delete')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

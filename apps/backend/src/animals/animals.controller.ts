@@ -46,6 +46,13 @@ export class AnimalsController {
         return this.animalsService.findAll(query);
     }
 
+    @Get('stats')
+    @ApiOperation({ summary: 'Get animal statistics' })
+    @ApiResponse({ status: 200, description: 'Return statistics about the animals' })
+    getStats() {
+        return this.animalsService.getStats();
+    }
+
     @Get(':id')
     @ApiOperation({ summary: 'Get a specific animal' })
     @ApiResponse({ status: 200, description: 'The animal details' })
