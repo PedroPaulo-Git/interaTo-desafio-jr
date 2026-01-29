@@ -28,6 +28,9 @@ import {
 } from '@/components/ui/select'
 import { ButtonSpinner } from '@/components/ui/loading-spinner'
 import type { Animal, AnimalFormData } from '@/lib/types'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { animalSchema, type AnimalForm } from '@/lib/schemas'
 import Image from 'next/image'
 
 // ============================================
@@ -55,7 +58,7 @@ function SlidePanel({ isOpen, onClose, children, title, icon }: SlidePanelProps)
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          
+
           {/* Panel */}
           <motion.div
             className="fixed bottom-0 right-0 z-50 w-full max-w-md h-[85vh] md:h-auto md:max-h-[80vh] md:bottom-6 md:right-6 md:rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
@@ -83,7 +86,7 @@ function SlidePanel({ isOpen, onClose, children, title, icon }: SlidePanelProps)
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            
+
             {/* Content */}
             <div className="overflow-y-auto p-6" style={{ maxHeight: 'calc(80vh - 80px)' }}>
               {children}
@@ -148,11 +151,10 @@ export function ViewAnimalDialog({ animal, isOpen, onClose, onEdit, onDelete }: 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold text-foreground">{animal.name}</h3>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              animal.type === 'DOG' 
-                ? 'bg-accent/20 text-accent-foreground' 
-                : 'bg-primary/20 text-primary'
-            }`}>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${animal.type === 'DOG'
+              ? 'bg-accent/20 text-accent-foreground'
+              : 'bg-primary/20 text-primary'
+              }`}>
               {animal.type === 'DOG' ? 'Cachorro' : 'Gato'}
             </span>
           </div>
@@ -241,35 +243,35 @@ interface EditAnimalDialogProps {
 
 export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimalDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState<AnimalFormData>({
-    name: animal?.name || '',
-    age: animal?.age || 1,
-    type: animal?.type || 'DOG',
-    breed: animal?.breed || '',
-    ownerName: animal?.ownerName || '',
-    ownerContact: animal?.ownerContact || '',
-    imageUrl: animal?.imageUrl,
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<AnimalForm>({
+    resolver: zodResolver(animalSchema),
   })
 
   React.useEffect(() => {
     if (animal) {
-      setFormData({
+      reset({
         name: animal.name,
         age: animal.age,
         type: animal.type,
         breed: animal.breed,
         ownerName: animal.ownerName,
         ownerContact: animal.ownerContact,
-        imageUrl: animal.imageUrl,
       })
     }
-  }, [animal])
+  }, [animal, reset])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: AnimalForm) => {
     setIsLoading(true)
     try {
-      await onSave(formData)
+      await onSave({
+        ...data,
+      })
       onClose()
     } finally {
       setIsLoading(false)
@@ -283,12 +285,12 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
       title="Editar Animal"
       icon={<Pencil className="w-5 h-5 text-primary" />}
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Image Upload Placeholder */}
         <div className="relative w-full aspect-video rounded-2xl bg-secondary/50 border-2 border-dashed border-border overflow-hidden flex items-center justify-center cursor-pointer hover:bg-secondary/70 transition-colors">
-          {formData.imageUrl ? (
+          {animal?.imageUrl ? (
             <Image
-              src={formData.imageUrl || "/placeholder.svg"}
+              src={animal.imageUrl || "/placeholder.svg"}
               alt="Pet"
               fill
               className="object-cover"
@@ -296,7 +298,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
           ) : (
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <Camera className="w-8 h-8" />
-              <p className="text-sm">Clique para adicionar foto</p>
+              <p className="text-sm">Clique para adicionar foto (em breve)</p>
             </div>
           )}
         </div>
@@ -305,23 +307,22 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
           <Label htmlFor="edit-name">Nome</Label>
           <Input
             id="edit-name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="h-12 rounded-xl"
-            required
+            className={`h-12 rounded-xl ${errors.name ? 'border-destructive' : ''}`}
             disabled={isLoading}
+            {...register('name')}
           />
+          {errors.name && <p className="text-xs text-destructive ml-1">{errors.name.message}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="edit-type">Tipo</Label>
             <Select
-              value={formData.type}
-              onValueChange={(value: 'DOG' | 'CAT') => setFormData({ ...formData, type: value })}
+              defaultValue={animal?.type}
+              onValueChange={(value: 'DOG' | 'CAT') => setValue('type', value, { shouldValidate: true })}
               disabled={isLoading}
             >
-              <SelectTrigger className="h-12 rounded-xl">
+              <SelectTrigger className={`h-12 rounded-xl ${errors.type ? 'border-destructive' : ''}`}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -329,6 +330,7 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
                 <SelectItem value="CAT">Gato</SelectItem>
               </SelectContent>
             </Select>
+            {errors.type && <p className="text-xs text-destructive ml-1">{errors.type.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -336,14 +338,11 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
             <Input
               id="edit-age"
               type="number"
-              min={0}
-              max={30}
-              value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: Number(e.target.value) })}
-              className="h-12 rounded-xl"
-              required
+              className={`h-12 rounded-xl ${errors.age ? 'border-destructive' : ''}`}
               disabled={isLoading}
+              {...register('age')}
             />
+            {errors.age && <p className="text-xs text-destructive ml-1">{errors.age.message}</p>}
           </div>
         </div>
 
@@ -351,36 +350,33 @@ export function EditAnimalDialog({ animal, isOpen, onClose, onSave }: EditAnimal
           <Label htmlFor="edit-breed">Raca</Label>
           <Input
             id="edit-breed"
-            value={formData.breed}
-            onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
-            className="h-12 rounded-xl"
-            required
+            className={`h-12 rounded-xl ${errors.breed ? 'border-destructive' : ''}`}
             disabled={isLoading}
+            {...register('breed')}
           />
+          {errors.breed && <p className="text-xs text-destructive ml-1">{errors.breed.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="edit-owner">Nome do Tutor</Label>
           <Input
             id="edit-owner"
-            value={formData.ownerName}
-            onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
-            className="h-12 rounded-xl"
-            required
+            className={`h-12 rounded-xl ${errors.ownerName ? 'border-destructive' : ''}`}
             disabled={isLoading}
+            {...register('ownerName')}
           />
+          {errors.ownerName && <p className="text-xs text-destructive ml-1">{errors.ownerName.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="edit-contact">Contato</Label>
           <Input
             id="edit-contact"
-            value={formData.ownerContact}
-            onChange={(e) => setFormData({ ...formData, ownerContact: e.target.value })}
-            className="h-12 rounded-xl"
-            required
+            className={`h-12 rounded-xl ${errors.ownerContact ? 'border-destructive' : ''}`}
             disabled={isLoading}
+            {...register('ownerContact')}
           />
+          {errors.ownerContact && <p className="text-xs text-destructive ml-1">{errors.ownerContact.message}</p>}
         </div>
 
         <div className="flex gap-3 pt-4">
@@ -459,7 +455,7 @@ export function DeleteAnimalDialog({ animal, isOpen, onClose, onConfirm }: Delet
           >
             <AlertTriangle className="w-10 h-10 text-destructive" />
           </motion.div>
-          
+
           <div className="space-y-2">
             <h3 className="text-xl font-semibold text-foreground">
               Excluir {animal.name}?

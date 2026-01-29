@@ -31,15 +31,15 @@ export function StatsHeader({ userName }: StatsHeaderProps) {
   const GreetingIcon = greeting.icon
 
   return (
-    <motion.div 
-      className="px-4 py-6 bg-gradient-to-br from-primary/5 via-secondary to-accent/5"
+    <motion.div
+      className="px-10 py-6 bg-linear-to-br from-primary/5 via-secondary to-accent/5 dark:from-background dark:via-background dark:to-background border-b border-transparent dark:border-border/50 text-foreground"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-1">
-          <motion.div 
+          <motion.div
             className="flex items-center gap-2"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -50,8 +50,8 @@ export function StatsHeader({ userName }: StatsHeaderProps) {
               {greeting.text}
             </span>
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             className="text-2xl font-bold text-foreground flex items-center gap-2"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -65,8 +65,8 @@ export function StatsHeader({ userName }: StatsHeaderProps) {
               <Sparkles className="w-5 h-5 text-accent" />
             </motion.span>
           </motion.h1>
-          
-          <motion.div 
+
+          <motion.div
             className="flex items-center gap-2 text-sm text-muted-foreground"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}

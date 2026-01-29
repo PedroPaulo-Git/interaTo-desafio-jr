@@ -32,6 +32,12 @@ To start the Database, Backend, and Frontend:
 docker compose up
 ```
 
+Or to run locally (without Docker):
+
+```bash
+npm run dev
+```
+
 - **Frontend**: http://localhost:3000
 - **Backend**: http://localhost:3333
 - **Swagger Docs**: http://localhost:3333/api

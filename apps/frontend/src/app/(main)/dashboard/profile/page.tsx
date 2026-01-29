@@ -89,7 +89,7 @@ export default function ProfilePage() {
 
       {/* Profile Card */}
       <motion.div 
-        className="px-4 "
+        className="px-10 "
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -226,7 +226,7 @@ export default function ProfilePage() {
 
       {/* Settings */}
       <motion.div 
-        className="px-4 mt-6"
+        className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -263,7 +263,7 @@ export default function ProfilePage() {
 
       {/* Push Notifications Toggle */}
       <motion.div 
-        className="px-4 mt-6"
+        className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -288,7 +288,7 @@ export default function ProfilePage() {
 
       {/* Logout */}
       <motion.div 
-        className="px-4 mt-6"
+        className="px-10 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}

@@ -2,8 +2,11 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Cat, Eye, EyeOff, LogIn, Mail, Lock, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Mail, Lock, AlertCircle } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,28 +14,28 @@ import { Label } from '@/components/ui/label'
 import { ButtonSpinner } from '@/components/ui/loading-spinner'
 import { useAuth } from '@/lib/auth/auth-context'
 import { toast } from 'sonner'
+import { loginSchema, LoginForm } from '@/lib/schemas'
 
 export default function LoginPage() {
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+  const onSubmit = async (data: LoginForm) => {
     setIsLoading(true)
-    
     try {
-      await login(formData)
+      await login(data)
       toast.success('Login realizado com sucesso!')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro ao fazer login'
-      setError(message)
       toast.error(message)
     } finally {
       setIsLoading(false)
@@ -46,21 +49,28 @@ export default function LoginPage() {
       transition={{ duration: 0.3 }}
     >
       <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
-        <motion.div 
-          className="h-2 bg-gradient-to-r from-primary via-primary/80 to-accent"
+        <motion.div
+          className="h-2 bg-linear-to-r from-primary via-primary/80 to-accent"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         />
         <CardHeader className="text-center pb-2 pt-8">
-          <motion.div 
-            className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, delay: 0.3 }}
+          <motion.div
+            className=" rounded-xl py-2 flex items-center justify-center"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <Cat className="w-8 h-8 text-primary" />
+            <Image
+              src="/img/LogoHigh.png"
+              alt="Logo"
+              className="w-48 -my-10"
+              width={192}
+              height={192}
+              unoptimized
+            />
           </motion.div>
+
           <CardTitle className="text-2xl font-bold text-foreground">
             Bem-vindo de volta!
           </CardTitle>
@@ -68,21 +78,9 @@ export default function LoginPage() {
             Entre na sua conta para gerenciar o petshop
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="px-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <motion.div
-                className="flex items-center gap-2 p-3 rounded-xl bg-destructive/10 text-destructive text-sm"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                {error}
-              </motion.div>
-            )}
-            
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-foreground">
                 E-mail
@@ -93,15 +91,19 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="h-12 pl-12 rounded-xl border-border bg-secondary/50 focus:bg-card transition-colors"
-                  required
+                  className={`h-12 pl-12 rounded-xl border-border bg-secondary/50 focus:bg-card transition-colors ${errors.email ? 'border-destructive' : ''}`}
                   disabled={isLoading}
+                  {...register('email')}
                 />
               </div>
+              {errors.email && (
+                <p className="text-xs text-destructive flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {errors.email.message}
+                </p>
+              )}
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium text-foreground">
                 Senha
@@ -112,11 +114,9 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Digite sua senha"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="h-12 pl-12 rounded-xl border-border bg-secondary/50 focus:bg-card transition-colors pr-12"
-                  required
+                  className={`h-12 pl-12 rounded-xl border-border bg-secondary/50 focus:bg-card transition-colors pr-12 ${errors.password ? 'border-destructive' : ''}`}
                   disabled={isLoading}
+                  {...register('password')}
                 />
                 <button
                   type="button"
@@ -127,19 +127,25 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-xs text-destructive flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-end">
-              <Link 
-                href="/forgot-password" 
+              <Link
+                href="/forgot-password"
                 className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 Esqueceu a senha?
               </Link>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full h-12 rounded-xl text-base font-semibold bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:shadow-primary/25"
               disabled={isLoading}
             >
@@ -157,7 +163,7 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
-        
+
         <CardFooter className="flex flex-col gap-4 px-8 pb-8">
           <div className="relative w-full">
             <div className="absolute inset-0 flex items-center">
@@ -167,11 +173,11 @@ export default function LoginPage() {
               <span className="bg-card px-4 text-muted-foreground">ou</span>
             </div>
           </div>
-          
+
           <p className="text-center text-sm text-muted-foreground">
             Ainda nao tem uma conta?{' '}
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="font-semibold text-primary hover:text-primary/80 transition-colors"
             >
               Cadastre-se

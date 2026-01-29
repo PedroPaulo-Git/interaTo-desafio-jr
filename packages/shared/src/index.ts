@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const phoneRegex = /^(\+55|55)?\s?(\(?[1-9]{2}\)?)?\s?(9?\d{4})[-.\s]?(\d{4})$/;
+
 /**
  * User Role Enum
  * Currently only 'USER' is needed, but designed for extensibility (e.g. ADMIN).
@@ -15,7 +17,7 @@ export const UserSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters").optional(), // Optional on reads/listings
-    contact: z.string().regex(/^\+55\d{2}9?\d{8}$/, "Contact must be in valid Brazilian format (e.g. +5581987730575)"),
+    contact: z.string().regex(phoneRegex, "Contact must be in valid Brazilian format (e.g. 11 99999-9999)"),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
@@ -50,8 +52,8 @@ export const AnimalSchema = z.object({
 
     // These fields might be populated from the User relation, or stored if denormalized validation is needed.
     // For the DTO/Response, we often include them.
-    ownerName: z.string().optional(),
-    ownerContact: z.string().optional(),
+    ownerName: z.string().min(1, "Owner name is required"),
+    ownerContact: z.string().regex(phoneRegex, "Owner contact must be in valid Brazilian format (e.g. 11 99999-9999)"),
 
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
@@ -62,8 +64,6 @@ export type Animal = z.infer<typeof AnimalSchema>;
 export const CreateAnimalSchema = AnimalSchema.omit({
     id: true,
     ownerId: true,
-    ownerName: true,
-    ownerContact: true,
     createdAt: true,
     updatedAt: true
 });

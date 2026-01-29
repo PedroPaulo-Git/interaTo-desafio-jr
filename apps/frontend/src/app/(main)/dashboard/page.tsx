@@ -5,22 +5,24 @@ import { motion } from 'framer-motion'
 import { StatsHeader } from '@/components/domain/stats-header'
 import { MenuGrid } from '@/components/domain/menu-grid'
 import { AnimalCard } from '@/components/domain/animal-card'
-import { 
-  ViewAnimalDialog, 
-  EditAnimalDialog, 
-  DeleteAnimalDialog 
+import {
+  ViewAnimalDialog,
+  EditAnimalDialog,
+  DeleteAnimalDialog
 } from '@/components/domain/animal-dialogs'
 import { Separator } from '@/components/ui/separator'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { useAuth } from '@/lib/auth/auth-context'
 import { animalsApi } from '@/lib/api/animals-api'
-import type { Animal, AnimalFormData, DialogState } from '@/lib/types'
+import { ViewModeSelector } from '@/components/domain/view-mode-selector'
+import type { Animal, AnimalFormData, DialogState, ViewMode } from '@/lib/types'
 import { toast } from 'sonner'
 
 export default function DashboardPage() {
   const { user, token } = useAuth()
   const [animals, setAnimals] = useState<Animal[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [dialogState, setDialogState] = useState<DialogState>({
     isOpen: false,
     type: null,
@@ -87,9 +89,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-full">
       <StatsHeader userName={user?.name?.split(' ')[0] || 'Usuario'} />
-      
-      <motion.div 
-        className="px-4 py-6"
+
+      <motion.div
+        className="px-6 md:px-10 py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -99,21 +101,32 @@ export default function DashboardPage() {
 
       <Separator className="mx-4 w-auto" />
 
-      <motion.div 
-        className="px-4 py-6"
+      <motion.div
+        className="px-6 md:px-10 py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <h2 className="text-lg font-semibold text-foreground mb-4">
-          Animais recentes
-        </h2>
-        <div className="space-y-3">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">
+            Animais recentes
+          </h2>
+          <ViewModeSelector currentMode={viewMode} onModeChange={setViewMode} />
+        </div>
+
+        <div className={
+          viewMode === 'list'
+            ? "space-y-3"
+            : viewMode === 'grid'
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+        }>
           {animals.slice(0, 5).map((animal, index) => (
             <AnimalCard
               key={animal.id}
               animal={animal}
               index={index}
+              viewMode={viewMode}
               onClick={(a) => openDialog('view', a)}
               onEdit={(a) => openDialog('edit', a)}
               onDelete={(a) => openDialog('delete', a)}

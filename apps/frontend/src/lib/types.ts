@@ -15,7 +15,7 @@ export interface Animal {
   imageUrl?: string
   createdAt: string
   updatedAt: string
-  userId: string
+  ownerId: string
   isOwner?: boolean
 }
 
@@ -72,6 +72,8 @@ export interface AnimalFormData {
 // ============================================
 // UI STATE TYPES
 // ============================================
+
+export type ViewMode = 'list' | 'grid' | 'compact'
 
 export interface DialogState {
   isOpen: boolean
