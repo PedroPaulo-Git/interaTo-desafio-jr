@@ -22,5 +22,8 @@
   "devDependencies": {
     "turbo": "latest"
   },
-  "packageManager": "npm@10.0.0"
+  "packageManager": "npm@10.2.4",
+  "overrides": {
+    "lodash": "4.17.23"
+  }
 }
