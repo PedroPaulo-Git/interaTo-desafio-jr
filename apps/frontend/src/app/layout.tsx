@@ -15,7 +15,12 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'PetShop Manager',
   description: 'Sistema de gerenciamento para petshop - Cuide dos seus clientes peludos',
-  generator: 'v0.app'
+  generator: 'v0.app',
+  icons: {
+    icon: '/img/LogoHigh.png',
+    shortcut: '/img/LogoHigh.png',
+    apple: '/img/LogoHigh.png',
+  },
 }
 
 export const viewport: Viewport = {
