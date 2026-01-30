@@ -21,7 +21,7 @@
 ### 4. **Validação Completa com Zod** ✨
 - ✅ Frontend: react-hook-form + zodResolver
 - ✅ Backend: ZodValidationPipe (nestjs-zod)
-- ✅ Schemas compartilhados no package `@repo/shared`
+- ✅ Schemas centralizados em `apps/backend/src/common/schemas.ts`
 - ✅ Validação de telefone brasileiro (múltiplos formatos)
 - ✅ Mensagens de erro inline em todos os formulários
 - ✅ Páginas refatoradas: Login, Register, New Animal, Edit Animal
@@ -60,27 +60,25 @@ interaTo-desafio-jr/
 │   │   │   │   ├── domain/     # Business components
 │   │   │   │   └── ui/         # Shadcn components
 │   │   │   └── lib/
-│   │   │       ├── i18n.ts           # ✨ NEW: i18n system
-│   │   │       ├── mock-data.ts      # ✨ NEW: Mock CRUD
+│   │   │       ├── i18n.ts           # i18n system
+│   │   │       ├── mock-data.ts      # Mock CRUD
 │   │   │       ├── schemas.ts        # Frontend Zod schemas
 │   │   │       ├── auth/
 │   │   │       └── api/
-│   │   ├── MOCK_MODE.md        # ✨ NEW: Mock docs
-│   │   ├── I18N.md             # ✨ NEW: i18n docs
+│   │   ├── MOCK_MODE.md        # Mock docs
+│   │   ├── I18N.md             # i18n docs
 │   │   └── Dockerfile
 │   └── backend/
 │       ├── src/
 │       │   ├── auth/           # Authentication module
 │       │   ├── animals/        # Animals module
-│       │   └── main.ts         # ZodValidationPipe ✨
+│       │   ├── common/
+│       │   │   └── schemas.ts  # Zod validation schemas
+│       │   └── main.ts         # ZodValidationPipe
 │       └── Dockerfile
-├── packages/
-│   └── shared/
-│       └── src/
-│           └── index.ts        # Shared Zod schemas ✨
-├── INSTRUCTIONS.md             # ✨ UPDATED: Complete guide
+├── INSTRUCTIONS.md             # Complete guide
 ├── docker-compose.yml
-└── package.json                # ✨ UPDATED: New commands
+└── package.json                # Monorepo commands
 ```
 
 ## 🛠️ Stack Tecnológica

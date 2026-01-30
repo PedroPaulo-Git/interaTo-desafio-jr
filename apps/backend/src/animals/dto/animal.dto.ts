@@ -1,6 +1,6 @@
 
 import { createZodDto } from 'nestjs-zod';
-import { CreateAnimalSchema } from '@repo/shared';
+import { CreateAnimalSchema, AnimalType as AnimalTypeEnum } from '../../common/schemas';
 import { ApiProperty } from '@nestjs/swagger';
 
 enum AnimalType {

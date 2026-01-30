@@ -108,8 +108,7 @@ To test protected routes (like Creating or Updating Animals) on Swagger:
 - **Monorepo**: This project uses NPM Workspaces + Turborepo.
 - **Backend**: NestJS with Prisma, implementing DDD and Repository Pattern.
 - **Frontend**: Next.js 15+ with App Router, Shadcn/UI, TailwindCSS, and Framer Motion.
-- **Shared**: Zod schemas and TypeScript interfaces shared between apps.
-- **Validation**: Zod schemas for both frontend (react-hook-form) and backend (nestjs-zod).
+- **Validation**: Zod schemas centralized in `apps/backend/src/common/schemas.ts` for backend validation (nestjs-zod).
 - **Theme**: Dark mode support with optimized transitions (no flicker).
 
 ## Database Migrations

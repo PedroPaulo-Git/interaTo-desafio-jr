@@ -109,8 +109,9 @@ Valorizamos a transparência, a capacidade de priorização e o raciocínio téc
 - ✅ **Swagger/OpenAPI** - Documentação interativa da API
 - ✅ **Segurança** - JWT, validação backend, permissions
 - ✅ **Clean Code** - DDD, Repository Pattern, separation of concerns
-- ✅ **Monorepo** - Turborepo + NPM Workspaces
+- ✅ **Turborepo** - Monorepo com NPM Workspaces
 - ✅ **TypeScript** - 100% tipado
+- ✅ **Zod Schemas** - Validação centralizada em `src/common/schemas.ts`
 
 ### Funcionalidades Extras
 

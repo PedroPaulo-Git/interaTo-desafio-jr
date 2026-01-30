@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const phoneRegex = /^(\+55|55)?\s?(\(?[1-9]{2}\)?)?\s?(9?\d{4})[-.\s]?(\d{4})$/;
+const phoneRegex = /^(\+55|55)?\s?(\(?[1-9]{2}\)?)?\s?(9?\d{4})[-.\\s]?(\d{4})$/;
 
 /**
  * User Role Enum
