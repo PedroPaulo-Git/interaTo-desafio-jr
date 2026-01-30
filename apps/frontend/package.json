@@ -1,6 +1,5 @@
-
 {
-  "name": "petshop-challenger-interato",
+  "name": "@repo/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {

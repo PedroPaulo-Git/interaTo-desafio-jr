@@ -10,22 +10,22 @@ enum AnimalType {
 
 export class CreateAnimalDto extends createZodDto(CreateAnimalSchema) {
     @ApiProperty({ example: 'Rex', description: 'Name of the animal' })
-    name: string;
+    declare name: string;
 
     @ApiProperty({ example: 5, description: 'Age of the animal' })
-    age: number;
+    declare age: number;
 
     @ApiProperty({ enum: AnimalType, example: 'DOG', description: 'Type of the animal' })
-    type: AnimalType;
+    declare type: AnimalType;
 
     @ApiProperty({ example: 'Golden Retriever', description: 'Breed of the animal' })
-    breed: string;
+    declare breed: string;
 
     @ApiProperty({ example: 'John Doe', description: 'Name of the owner' })
-    ownerName: string;
+    declare ownerName: string;
 
     @ApiProperty({ example: '+5581987730575', description: 'Contact info of the owner' })
-    ownerContact: string;
+    declare ownerContact: string;
 }
 
 export class UpdateAnimalDto extends CreateAnimalDto { }

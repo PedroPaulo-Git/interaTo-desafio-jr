@@ -19,15 +19,12 @@ services:
       dockerfile: apps/backend/Dockerfile
     container_name: interato-backend
     ports:
-      - "3334:3333"
+      - "3333:3333"
     environment:
       DATABASE_URL: "postgresql://user:password@database:5432/petshop"
       NODE_ENV: development
     depends_on:
       - database
-    volumes:
-      - .:/app
-      - /app/node_modules
     networks:
       - interato-network
 
@@ -37,14 +34,11 @@ services:
       dockerfile: apps/frontend/Dockerfile
     container_name: interato-frontend
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: "http://backend:3333"
     depends_on:
       - backend
-    volumes:
-      - .:/app
-      - /app/node_modules
     networks:
       - interato-network
 
